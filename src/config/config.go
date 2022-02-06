@@ -14,7 +14,13 @@ func StringDatabase() string {
 		log.Fatal(erro)
 	}
 
-	return fmt.Sprintf("postgresql://%s:%s@localhost:5432/%s",
+	return fmt.Sprintf(`
+	host=localhost 
+	port=5432 
+	user=%s
+	password=%s 
+	dbname=%s 
+	sslmode=disable`,
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"),
