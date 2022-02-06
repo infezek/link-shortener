@@ -1,6 +1,7 @@
 package router
 
 import (
+	"database/sql"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -9,16 +10,16 @@ import (
 type Router struct {
 	URI                    string
 	Method                 string
-	Function               func(http.ResponseWriter, *http.Request)
+	Function               func(db *sql.DB) http.HandlerFunc
 	RequiresAuthentication bool
 }
 
-func Settings(r *mux.Router) *mux.Router {
+func Settings(r *mux.Router, db *sql.DB) *mux.Router {
 	routers := routersSign
 
 	for _, router := range routers {
 		r.HandleFunc(router.URI,
-			router.Function,
+			router.Function(db),
 		).Methods(router.Method)
 	}
 	return r

@@ -9,8 +9,8 @@ import (
 
 func main() {
 	fmt.Println("Link Shortener")
-	routers := routers.Generate()
-	_, err := database.Connect()
+	db, err := database.Connect()
+	routers := routers.Generate(db)
 	if err != nil {
 		fmt.Println("Could not start the database")
 	}
