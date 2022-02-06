@@ -5,6 +5,9 @@ services:
     image: postgres
     restart: always
     container_name: psql
+    volumes:
+      - ./.docker/psql:/var/lib/postgresql/data
+      - ./.docker/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
     environment:
