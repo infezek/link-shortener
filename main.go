@@ -10,10 +10,10 @@ import (
 func main() {
 	fmt.Println("Link Shortener")
 	db, err := database.Connect()
-	routers := routers.Generate(db)
 	if err != nil {
 		fmt.Println("Could not start the database")
 	}
+	routers := routers.Generate(db)
 
 	http.ListenAndServe(":8000", routers)
 }

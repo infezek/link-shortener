@@ -1,37 +1,22 @@
 package router
 
 import (
-	"database/sql"
-	"fmt"
 	"net/http"
+	"shortener/src/controllers"
 )
 
 var routersSign = []Router{
 	{
-		URI:    "/signin",
-		Method: http.MethodGet,
-		Function: func(db *sql.DB) http.HandlerFunc {
-			return http.HandlerFunc(
-				func(w http.ResponseWriter, req *http.Request) {
-					fmt.Println(&db)
-					fmt.Fprintf(w, "Sign In")
-				},
-			)
-		},
+		URI:                    "/signin",
+		Method:                 http.MethodPost,
+		Function:               controllers.SignIn,
 		RequiresAuthentication: false,
 	},
 	{
 
-		URI:    "/signup",
-		Method: http.MethodGet,
-		Function: func(db *sql.DB) http.HandlerFunc {
-			return http.HandlerFunc(
-				func(w http.ResponseWriter, req *http.Request) {
-					fmt.Println(&db)
-					fmt.Fprintf(w, "Sign Up")
-				},
-			)
-		},
+		URI:                    "/signup",
+		Method:                 http.MethodPost,
+		Function:               controllers.SignUp,
 		RequiresAuthentication: false,
 	},
 }
