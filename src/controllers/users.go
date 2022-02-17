@@ -9,6 +9,7 @@ import (
 	"shortener/src/config"
 	"shortener/src/entity"
 	repositories "shortener/src/repository"
+	"shortener/src/responses"
 	"shortener/src/security"
 	"time"
 
@@ -50,8 +51,7 @@ func SignIn(db *sql.DB) http.HandlerFunc {
 			if err != nil {
 				fmt.Println(err)
 			}
-			fmt.Println(tokenString)
-			return
+			responses.Json(w, 200, map[string]string{"token": tokenString})
 		},
 	)
 }
