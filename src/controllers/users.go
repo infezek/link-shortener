@@ -72,6 +72,18 @@ func SignUp(db *sql.DB) http.HandlerFunc {
 			if err := json.Unmarshal(request, &user); err != nil {
 				return
 			}
+
+			repositorios := repositories.UserRepositoryDb{Db: db}
+			userDb, err := repositorios.FindByEmail(user.Email)
+			if err != nil {
+				return
+			}
+
+			if userDb.ID != "" {
+				responses.Json(w, 400, map[string]string{"message": "Ja existe um usuario com esse email"})
+				return
+			}
+
 			passwordEncrypt, err := security.EncryptPassword(user.Password)
 			user.Password = passwordEncrypt
 			if err != nil {
@@ -81,12 +93,10 @@ func SignUp(db *sql.DB) http.HandlerFunc {
 			if err := user.Prepare(); err != nil {
 				return
 			}
-			repositorios := repositories.UserRepositoryDb{Db: db}
-			userID, err := repositorios.Insert(user)
-			if err != nil {
-				return
-			}
-			fmt.Println(userID)
+
+			repositorios.Insert(user)
+
+			responses.Json(w, 200, map[string]string{"message": "Usuario criado com sucesso."})
 		},
 	)
 }
