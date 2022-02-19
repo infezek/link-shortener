@@ -32,18 +32,24 @@ func SignIn(db *sql.DB) http.HandlerFunc {
 			hmacSampleSecret := []byte(config.ProjectSettings().SecretKey)
 
 			repositorios := repositories.UserRepositoryDb{Db: db}
-			valor, err := repositorios.FindByEmail(usuario.Email)
+			userDb, err := repositorios.FindByEmail(usuario.Email)
 
 			if err != nil {
 				return
 			}
-			fmt.Println(valor)
+
+			user := security.CheckPassword(usuario.Password, userDb.Password)
+
+			if !user {
+				responses.Json(w, 200, map[string]string{"message": "Usuario ou senha estão errados"})
+				return
+			}
 
 			now := time.Now()
 			token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-				"sub":      "123123",
-				"Subject":  "teste",
-				"IssuedAt": now.Unix(),
+				"sub":      userDb.ID,
+				"payload":  userDb.Email,
+				"issuedAt": now.Unix(),
 				"exp":      now.Add(time.Second * 60).Unix(),
 			})
 			tokenString, err := token.SignedString(hmacSampleSecret)
