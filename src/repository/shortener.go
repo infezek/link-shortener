@@ -49,3 +49,28 @@ func (repo *ShortenerRepositoryDb) FindAll() ([]entity.Shorteners, error) {
 
 	return shortenersReponse, nil
 }
+
+func (repo *ShortenerRepositoryDb) FindById(shortenerId string) (entity.Shorteners, error) {
+	sql_statement := "SELECT id, url_shortened, url_original, user_id from shorteners WHERE id = $1;"
+	repositoryShortener, err := repo.Db.Query(sql_statement, shortenerId)
+	if err != nil {
+		fmt.Println(err)
+		return entity.Shorteners{}, err
+	}
+
+	var shortener entity.Shorteners
+
+	for repositoryShortener.Next() {
+		if err := repositoryShortener.Scan(
+			&shortener.ID,
+			&shortener.UrlShortened,
+			&shortener.UrlOriginal,
+			&shortener.UserId,
+		); err != nil {
+			fmt.Println(err)
+			return entity.Shorteners{}, nil
+		}
+	}
+
+	return shortener, nil
+}
