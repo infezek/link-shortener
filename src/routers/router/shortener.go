@@ -7,22 +7,28 @@ import (
 
 var routersShortener = []Router{
 	{
-		URI:                    "/shortener",
+		URI:                    "/shorteners",
 		Method:                 http.MethodGet,
 		Function:               controllers.GetAllShortener,
 		RequiresAuthentication: false,
 	},
 	{
+		URI:                    "/shorteners/user",
+		Method:                 http.MethodGet,
+		Function:               controllers.FindByUserID,
+		RequiresAuthentication: true,
+	},
+	{
 		URI:                    "/shortener/{shortenerID}",
 		Method:                 http.MethodGet,
 		Function:               controllers.GetByIDShortener,
-		RequiresAuthentication: false,
+		RequiresAuthentication: true,
 	},
 	{
 		URI:                    "/shortener",
 		Method:                 http.MethodPost,
 		Function:               controllers.CreateShortener,
-		RequiresAuthentication: true,
+		RequiresAuthentication: false,
 	},
 	{
 		URI:                    "/shortener/{shortenerID}",

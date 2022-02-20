@@ -115,3 +115,21 @@ func DeleteByID(db *sql.DB) http.HandlerFunc {
 		},
 	)
 }
+
+func FindByUserID(db *sql.DB) http.HandlerFunc {
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			bodyToken := security.DecodeToken(r)
+			repositoryDB := repositories.ShortenerRepositoryDb{Db: db}
+			repository, err := repositoryDB.FindByUserID(bodyToken.Sub)
+
+			if err != nil {
+				responses.Json(w, 400, err)
+				return
+			}
+
+			responses.Json(w, 200, repository)
+			return
+		},
+	)
+}

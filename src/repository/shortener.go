@@ -89,3 +89,29 @@ func (repo *ShortenerRepositoryDb) DeleteByID(shortenerID string) error {
 	}
 	return errors.New("url não encontrada")
 }
+
+func (repo *ShortenerRepositoryDb) FindByUserID(userID string) ([]entity.Shorteners, error) {
+	sql_statement := "SELECT id, url_shortened, url_original, user_id FROM shorteners where user_id = $1"
+
+	repositoryRows, err := repo.Db.Query(sql_statement, userID)
+	if err != nil {
+		return []entity.Shorteners{}, err
+	}
+
+	var repositories []entity.Shorteners
+
+	for repositoryRows.Next() {
+		var repository entity.Shorteners
+		if err := repositoryRows.Scan(
+			&repository.ID,
+			&repository.UrlShortened,
+			&repository.UrlOriginal,
+			&repository.UserId,
+		); err != nil {
+			return []entity.Shorteners{}, nil
+		}
+		repositories = append(repositories, repository)
+
+	}
+	return repositories, nil
+}
