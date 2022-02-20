@@ -48,3 +48,23 @@ func ExtractToken(r *http.Request) string {
 	}
 	return ""
 }
+
+type User struct {
+	Sub     string `json:"sub"`
+	Payload string `json:"payload"`
+	jwt.StandardClaims
+}
+
+func DecodeToken(r *http.Request) User {
+	user := User{}
+
+	tokenString := ExtractToken(r)
+
+	_, err := jwt.ParseWithClaims(tokenString, &user, CheckTokenKey)
+	if err != nil {
+		fmt.Println("err", err)
+		return User{}
+	}
+
+	return user
+}
