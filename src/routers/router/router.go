@@ -15,7 +15,8 @@ type Router struct {
 }
 
 func Settings(r *mux.Router, db *sql.DB) *mux.Router {
-	routers := routersSign
+
+	routers := append(routersShortener, routersSign...)
 
 	for _, router := range routers {
 		r.HandleFunc(router.URI,
