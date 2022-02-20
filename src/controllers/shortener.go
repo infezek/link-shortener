@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"shortener/src/entity"
 	repositories "shortener/src/repository"
@@ -16,7 +17,23 @@ type Shortener struct {
 	UserId      string
 }
 
-func GetShortener(db *sql.DB) http.HandlerFunc {
+func GetAllShortener(db *sql.DB) http.HandlerFunc {
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			repositories := repositories.ShortenerRepositoryDb{Db: db}
+			shortenersRepository, err := repositories.FindAll()
+			if err != nil {
+				log.Fatal("Erro", err)
+				return
+			}
+
+			responses.Json(w, 200, shortenersRepository)
+			return
+		},
+	)
+}
+
+func CreateShortener(db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			body, erro := ioutil.ReadAll(r.Body)

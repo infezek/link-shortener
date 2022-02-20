@@ -8,8 +8,14 @@ import (
 var routersShortener = []Router{
 	{
 		URI:                    "/shortener",
+		Method:                 http.MethodGet,
+		Function:               controllers.GetAllShortener,
+		RequiresAuthentication: false,
+	},
+	{
+		URI:                    "/shortener",
 		Method:                 http.MethodPost,
-		Function:               controllers.GetShortener,
+		Function:               controllers.CreateShortener,
 		RequiresAuthentication: true,
 	},
 }
