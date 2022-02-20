@@ -50,7 +50,7 @@ func SignIn(db *sql.DB) http.HandlerFunc {
 				"sub":      userDb.ID,
 				"payload":  userDb.Email,
 				"issuedAt": now.Unix(),
-				"exp":      now.Add(time.Second * 60).Unix(),
+				"exp":      now.Add(time.Hour * 2).Unix(),
 			})
 			tokenString, err := token.SignedString(hmacSampleSecret)
 

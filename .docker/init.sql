@@ -7,3 +7,12 @@ CREATE TABLE IF NOT EXISTS users (
     password varchar(128) NOT NULL,
     PRIMARY KEY (id)
 );
+
+
+CREATE TABLE IF NOT EXISTS shorteners (
+    id uuid DEFAULT uuid_generate_v4(),
+    url_shortened varchar(8) NOT NULL,  
+    url_original varchar(128) NOT NULL,
+    user_id uuid DEFAULT uuid_generate_v4(),
+    PRIMARY KEY (id)
+);
