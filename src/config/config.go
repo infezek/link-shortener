@@ -26,3 +26,19 @@ func StringDatabase() string {
 		os.Getenv("DB_NAME"),
 	)
 }
+
+type Settings struct {
+	SecretKey string
+}
+
+func ProjectSettings() Settings {
+	var erro error
+	if erro = godotenv.Load(); erro != nil {
+		log.Fatal(erro)
+	}
+
+	config := Settings{
+		os.Getenv("SECRET_KEY"),
+	}
+	return config
+}

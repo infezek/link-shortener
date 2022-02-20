@@ -6,7 +6,7 @@ services:
     restart: always
     container_name: psql
     volumes:
-      - ./.docker/psql:/var/lib/postgresql/data
+      - ./.docker/psql:/var/lib/postgresql/data/
       - ./.docker/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
@@ -14,4 +14,3 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
-
