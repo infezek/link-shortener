@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"shortener/src/entity"
 )
@@ -50,7 +51,7 @@ func (repo *ShortenerRepositoryDb) FindAll() ([]entity.Shorteners, error) {
 	return shortenersReponse, nil
 }
 
-func (repo *ShortenerRepositoryDb) FindById(shortenerId string) (entity.Shorteners, error) {
+func (repo *ShortenerRepositoryDb) FindByID(shortenerId string) (entity.Shorteners, error) {
 	sql_statement := "SELECT id, url_shortened, url_original, user_id from shorteners WHERE id = $1;"
 	repositoryShortener, err := repo.Db.Query(sql_statement, shortenerId)
 	if err != nil {
@@ -73,4 +74,18 @@ func (repo *ShortenerRepositoryDb) FindById(shortenerId string) (entity.Shortene
 	}
 
 	return shortener, nil
+}
+
+func (repo *ShortenerRepositoryDb) DeleteByID(shortenerID string) error {
+	sql_statement := "DELETE FROM shorteners WHERE id = $1;"
+	shortener, err := repo.Db.Exec(sql_statement, shortenerID)
+	if err != nil {
+		return err
+	}
+	isDeleted, _ := shortener.RowsAffected()
+
+	if isDeleted == 1 {
+		return nil
+	}
+	return errors.New("url não encontrada")
 }

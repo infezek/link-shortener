@@ -35,14 +35,14 @@ func GetAllShortener(db *sql.DB) http.HandlerFunc {
 	)
 }
 
-func GetByIdShortener(db *sql.DB) http.HandlerFunc {
+func GetByIDShortener(db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
 			parametros := mux.Vars(r)
 			shortenerID := parametros["shortenerID"]
 
 			repository := repositories.ShortenerRepositoryDb{Db: db}
-			shortenersRepository, err := repository.FindById(shortenerID)
+			shortenersRepository, err := repository.FindByID(shortenerID)
 			if err != nil {
 				responses.Json(w, 400, map[string]string{"message": "não foi possivel encontrar essa url"})
 				return
@@ -92,6 +92,25 @@ func CreateShortener(db *sql.DB) http.HandlerFunc {
 				return
 			}
 			responses.Json(w, 200, map[string]string{"message": "ok"})
+			return
+		},
+	)
+}
+
+func DeleteByID(db *sql.DB) http.HandlerFunc {
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			param := mux.Vars(r)
+			shortenerID := param["shortenerID"]
+
+			repository := repositories.ShortenerRepositoryDb{Db: db}
+			err := repository.DeleteByID(shortenerID)
+
+			if err != nil {
+				responses.Json(w, 400, map[string]string{"message": "não foi possivel encontrar a url"})
+				return
+			}
+			responses.Json(w, 200, map[string]string{"message": "url foi deletada"})
 			return
 		},
 	)

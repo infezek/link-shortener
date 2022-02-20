@@ -15,13 +15,19 @@ var routersShortener = []Router{
 	{
 		URI:                    "/shortener/{shortenerID}",
 		Method:                 http.MethodGet,
-		Function:               controllers.GetByIdShortener,
+		Function:               controllers.GetByIDShortener,
 		RequiresAuthentication: false,
 	},
 	{
 		URI:                    "/shortener",
 		Method:                 http.MethodPost,
 		Function:               controllers.CreateShortener,
+		RequiresAuthentication: true,
+	},
+	{
+		URI:                    "/shortener/{shortenerID}",
+		Method:                 http.MethodDelete,
+		Function:               controllers.DeleteByID,
 		RequiresAuthentication: true,
 	},
 }
