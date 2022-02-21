@@ -6,6 +6,7 @@ import (
 )
 
 var routersShortener = []Router{
+
 	{
 		URI:                    "/shorteners",
 		Method:                 http.MethodGet,
@@ -35,5 +36,11 @@ var routersShortener = []Router{
 		Method:                 http.MethodDelete,
 		Function:               controllers.DeleteByID,
 		RequiresAuthentication: true,
+	},
+	{
+		URI:                    "/{shortener}",
+		Method:                 http.MethodGet,
+		Function:               controllers.RedirectURL,
+		RequiresAuthentication: false,
 	},
 }

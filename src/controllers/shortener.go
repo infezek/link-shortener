@@ -19,6 +19,22 @@ type Shortener struct {
 	UserId      string
 }
 
+func RedirectURL(db *sql.DB) http.HandlerFunc {
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			param := mux.Vars(r)
+			urlSearch := param["shortener"]
+
+			repository := repositories.ShortenerRepositoryDb{Db: db}
+
+			repositoryDb, err := repository.RedirectURL(urlSearch)
+			if err != nil {
+				return
+			}
+			responses.Json(w, 200, map[string]string{"url": repositoryDb})
+		},
+	)
+}
 func GetAllShortener(db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {

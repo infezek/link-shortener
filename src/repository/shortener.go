@@ -11,6 +11,28 @@ type ShortenerRepositoryDb struct {
 	Db *sql.DB
 }
 
+func (repo *ShortenerRepositoryDb) RedirectURL(url string) (string, error) {
+	sql_statement := "SELECT url_original FROM shorteners where url_shortened = $1"
+	repository, err := repo.Db.Query(sql_statement, url)
+
+	if err != nil {
+		return "", err
+	}
+	shortened := struct {
+		urlOriginal string
+	}{}
+
+	for repository.Next() {
+		if err := repository.Scan(
+			&shortened.urlOriginal,
+		); err != nil {
+			return "", nil
+		}
+	}
+
+	return shortened.urlOriginal, nil
+}
+
 func (repo *ShortenerRepositoryDb) Insert(shortener entity.Shorteners) (int64, error) {
 	sql_statement := "INSERT INTO shorteners (url_shortened, url_original, user_id) VALUES ($1, $2, $3);"
 	shortenerDb, err := repo.Db.Exec(sql_statement, shortener.UrlShortened, shortener.UrlOriginal, shortener.UserId)
