@@ -56,12 +56,18 @@ func GetByIDShortener(db *sql.DB) http.HandlerFunc {
 func CreateShortener(db *sql.DB) http.HandlerFunc {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
+			erro := security.ValidateToken(r)
+			userID := "00000000-00000000-00000000-00000000"
+
+			if erro == nil {
+				userID = security.DecodeToken(r).Sub
+			}
+
 			body, erro := ioutil.ReadAll(r.Body)
+
 			if erro != nil {
 				return
 			}
-
-			decodeJwt := security.DecodeToken(r)
 
 			shortener := struct {
 				UrlOriginal string
@@ -74,14 +80,14 @@ func CreateShortener(db *sql.DB) http.HandlerFunc {
 
 			shortenerEntity := entity.Shorteners{
 				UrlOriginal: shortener.UrlOriginal,
-				UserId:      decodeJwt.Sub,
+				UserId:      userID,
 			}
 			shortenerEntity, err := shortenerEntity.Validate()
 
 			shortenerFormated := entity.Shorteners{
 				UrlShortened: shortenerEntity.UrlShortened,
 				UrlOriginal:  shortener.UrlOriginal,
-				UserId:       decodeJwt.Sub,
+				UserId:       userID,
 			}
 
 			repositorios := repositories.ShortenerRepositoryDb{Db: db}
