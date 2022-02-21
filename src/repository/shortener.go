@@ -12,7 +12,7 @@ type ShortenerRepositoryDb struct {
 }
 
 func (repo *ShortenerRepositoryDb) RedirectURL(url string) (string, error) {
-	sql_statement := "SELECT url_original FROM shorteners where url_shortened = $1"
+	sql_statement := "SELECT url_original, visits FROM shorteners where url_shortened = $1"
 	repository, err := repo.Db.Query(sql_statement, url)
 
 	if err != nil {
@@ -20,14 +20,22 @@ func (repo *ShortenerRepositoryDb) RedirectURL(url string) (string, error) {
 	}
 	shortened := struct {
 		urlOriginal string
+		visits      int16
 	}{}
 
 	for repository.Next() {
 		if err := repository.Scan(
 			&shortened.urlOriginal,
+			&shortened.visits,
 		); err != nil {
 			return "", nil
 		}
+	}
+	sql_statement = "UPDATE  shorteners SET visits=$1 where url_shortened = $2;"
+	_, err = repo.Db.Exec(sql_statement, shortened.visits+1, url)
+
+	if err != nil {
+		return "", nil
 	}
 
 	return shortened.urlOriginal, nil
@@ -47,7 +55,7 @@ func (repo *ShortenerRepositoryDb) Insert(shortener entity.Shorteners) (int64, e
 }
 
 func (repo *ShortenerRepositoryDb) FindAll() ([]entity.Shorteners, error) {
-	sql_statement := "SELECT id, url_shortened, url_original, user_id from shorteners;"
+	sql_statement := "SELECT id, url_shortened, url_original, user_id, visits from shorteners;"
 	shortenersDb, err := repo.Db.Query(sql_statement)
 
 	if err != nil {
@@ -64,6 +72,7 @@ func (repo *ShortenerRepositoryDb) FindAll() ([]entity.Shorteners, error) {
 			&shortenerReponse.UrlShortened,
 			&shortenerReponse.UrlOriginal,
 			&shortenerReponse.UserId,
+			&shortenerReponse.Visits,
 		); err != nil {
 			return nil, err
 		}
@@ -74,7 +83,7 @@ func (repo *ShortenerRepositoryDb) FindAll() ([]entity.Shorteners, error) {
 }
 
 func (repo *ShortenerRepositoryDb) FindByID(shortenerId string) (entity.Shorteners, error) {
-	sql_statement := "SELECT id, url_shortened, url_original, user_id from shorteners WHERE id = $1;"
+	sql_statement := "SELECT id, url_shortened, url_original, user_id, visits from shorteners WHERE id = $1;"
 	repositoryShortener, err := repo.Db.Query(sql_statement, shortenerId)
 	if err != nil {
 		fmt.Println(err)
@@ -89,6 +98,7 @@ func (repo *ShortenerRepositoryDb) FindByID(shortenerId string) (entity.Shortene
 			&shortener.UrlShortened,
 			&shortener.UrlOriginal,
 			&shortener.UserId,
+			&shortener.Visits,
 		); err != nil {
 			fmt.Println(err)
 			return entity.Shorteners{}, nil
@@ -113,7 +123,7 @@ func (repo *ShortenerRepositoryDb) DeleteByID(shortenerID string) error {
 }
 
 func (repo *ShortenerRepositoryDb) FindByUserID(userID string) ([]entity.Shorteners, error) {
-	sql_statement := "SELECT id, url_shortened, url_original, user_id FROM shorteners where user_id = $1"
+	sql_statement := "SELECT id, url_shortened, url_original, user_id, visits FROM shorteners where user_id = $1"
 
 	repositoryRows, err := repo.Db.Query(sql_statement, userID)
 	if err != nil {
@@ -129,6 +139,7 @@ func (repo *ShortenerRepositoryDb) FindByUserID(userID string) ([]entity.Shorten
 			&repository.UrlShortened,
 			&repository.UrlOriginal,
 			&repository.UserId,
+			&repository.Visits,
 		); err != nil {
 			return []entity.Shorteners{}, nil
 		}

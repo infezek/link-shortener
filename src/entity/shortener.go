@@ -10,6 +10,7 @@ type Shorteners struct {
 	UrlShortened string `db:"url_shortened" json:"urlShortened"`
 	UrlOriginal  string `db:"url_original" json:"urlOriginal"`
 	UserId       string `db:"user_id" json:"userId"`
+	Visits       int16  `db:"visits" json:"visits"`
 }
 
 func (s *Shorteners) Validate() (Shorteners, error) {
