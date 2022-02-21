@@ -14,5 +14,6 @@ CREATE TABLE IF NOT EXISTS shorteners (
     url_shortened varchar(8) NOT NULL,  
     url_original varchar(128) NOT NULL,
     user_id uuid DEFAULT uuid_generate_v4(),
+    visits INT DEFAULT 0 NOT NULL,
     PRIMARY KEY (id)
 );
