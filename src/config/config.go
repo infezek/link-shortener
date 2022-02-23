@@ -15,12 +15,13 @@ func StringDatabase() string {
 	}
 
 	return fmt.Sprintf(`
-	host=localhost 
+	host=%s 
 	port=5432 
 	user=%s
 	password=%s 
 	dbname=%s 
 	sslmode=disable`,
+		os.Getenv("DB_HOST"),
 		os.Getenv("DB_USER"),
 		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"),

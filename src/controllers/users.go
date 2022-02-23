@@ -41,7 +41,7 @@ func SignIn(db *sql.DB) http.HandlerFunc {
 			user := security.CheckPassword(usuario.Password, userDb.Password)
 
 			if !user {
-				responses.Json(w, 200, map[string]string{"message": "Usuario ou senha estão errados"})
+				responses.Json(w, 400, map[string]string{"message": "usuario ou senha incorretos"})
 				return
 			}
 
