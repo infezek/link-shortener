@@ -28,10 +28,14 @@ func (repo *ShortenerRepositoryDb) RedirectURL(url string) (string, error) {
 			&shortened.urlOriginal,
 			&shortened.visits,
 		); err != nil {
-			return "", nil
+			return "", err
 		}
 	}
-	sql_statement = "UPDATE  shorteners SET visits=$1 where url_shortened = $2;"
+	if shortened.urlOriginal == "" {
+		return "", errors.New("url não encontrada")
+	}
+
+	sql_statement = "UPDATE shorteners SET visits=$1 where url_shortened = $2;"
 	_, err = repo.Db.Exec(sql_statement, shortened.visits+1, url)
 
 	if err != nil {
@@ -103,6 +107,10 @@ func (repo *ShortenerRepositoryDb) FindByID(shortenerId string) (entity.Shortene
 			fmt.Println(err)
 			return entity.Shorteners{}, nil
 		}
+	}
+
+	if shortener.ID == "" {
+		return entity.Shorteners{}, errors.New("url não encontrada")
 	}
 
 	return shortener, nil

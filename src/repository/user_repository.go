@@ -3,7 +3,6 @@ package repositories
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"shortener/src/entity"
 )
 
@@ -36,7 +35,10 @@ func (repo *UserRepositoryDb) FindByEmail(email string) (entity.Users, error) {
 
 	if userDb.Next() {
 		if err = userDb.Scan(&user.ID, &user.Username, &user.Email, &user.Password); err != nil {
-			log.Fatal(err)
+			return entity.Users{
+				Email:    "",
+				Password: "",
+			}, err
 		}
 	}
 

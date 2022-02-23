@@ -29,6 +29,7 @@ func RedirectURL(db *sql.DB) http.HandlerFunc {
 
 			repositoryDb, err := repository.RedirectURL(urlSearch)
 			if err != nil {
+				responses.Json(w, 400, map[string]string{"url": err.Error()})
 				return
 			}
 			responses.Json(w, 200, map[string]string{"url": repositoryDb})
@@ -60,7 +61,7 @@ func GetByIDShortener(db *sql.DB) http.HandlerFunc {
 			repository := repositories.ShortenerRepositoryDb{Db: db}
 			shortenersRepository, err := repository.FindByID(shortenerID)
 			if err != nil {
-				responses.Json(w, 400, map[string]string{"message": "não foi possivel encontrar essa url"})
+				responses.Json(w, 400, map[string]string{"message": err.Error()})
 				return
 			}
 			responses.Json(w, 200, shortenersRepository)

@@ -18,6 +18,7 @@ type Router struct {
 func Settings(r *mux.Router, db *sql.DB) *mux.Router {
 
 	routers := append(routersShortener, routersSign...)
+	routers = append(routers, routersHome...)
 
 	for _, router := range routers {
 		if router.RequiresAuthentication {

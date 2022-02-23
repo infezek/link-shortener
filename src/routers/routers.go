@@ -8,6 +8,7 @@ import (
 )
 
 func Generate(db *sql.DB) *mux.Router {
+
 	r := mux.NewRouter()
 	return router.Settings(r, db)
 }
