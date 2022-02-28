@@ -16,7 +16,7 @@ type Users struct {
 
 func (user *Users) validate() error {
 	if user.Username == "" {
-		return errors.New("the name is required and cannot be blank.")
+		return errors.New("the name is required and cannot be blank")
 	}
 	if len(user.Username) < 6 {
 		return errors.New("username is too weak please create a validate username")
@@ -50,11 +50,10 @@ func (user *Users) format() error {
 }
 
 func (user *Users) Prepare() error {
-	if erro := user.validate(); erro != nil {
+	if erro := user.format(); erro != nil {
 		return erro
 	}
-
-	if erro := user.format(); erro != nil {
+	if erro := user.validate(); erro != nil {
 		return erro
 	}
 
