@@ -24,6 +24,7 @@ func main() {
 
 	fmt.Println("Link Shortener")
 	db, err := database.Connect()
+
 	if err != nil {
 		fmt.Println("Could not start the database")
 	}
