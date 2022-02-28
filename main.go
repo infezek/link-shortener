@@ -2,12 +2,26 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"os"
 	"shortener/src/database"
 	"shortener/src/routers"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	var erro error
+	if erro = godotenv.Load(); erro != nil {
+		log.Fatal(erro)
+	}
+
+	var port string = "8000"
+	if os.Getenv("PORT") != "" {
+		port = os.Getenv("PORT")
+	}
+
 	fmt.Println("Link Shortener")
 	db, err := database.Connect()
 	if err != nil {
@@ -15,5 +29,5 @@ func main() {
 	}
 	routers := routers.Generate(db)
 
-	http.ListenAndServe(":8000", routers)
+	http.ListenAndServe(":"+port, routers)
 }
