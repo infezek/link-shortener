@@ -1,0 +1,15 @@
+FROM golang:latest as build
+
+WORKDIR /go/src/build
+RUN echo "tes1"
+COPY . .
+
+RUN GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o main
+
+
+FROM alpine:3.15.0
+WORKDIR /go/src/app
+COPY --from=build /go/src/build/.env .
+COPY --from=build /go/src/build/main .
+
+CMD ["./main"]
